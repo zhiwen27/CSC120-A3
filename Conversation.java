@@ -29,13 +29,13 @@ public class Conversation{
     Transcript[0] = "Hi there!  What's on your mind?";
     sc.nextLine();  // clear up the scanner as it is not user's input
 
-    for (int i = 0; i < ConvNum; i++){
+    for (int i = 0; i < ConvNum; i++){    // Start the rounds of conversation
 
       // User input
       String UserInput = sc.nextLine();
       // Define Chatbot output
       String BotOutput = "";
-      // Define the boolean to decide whether the input needs to be mirrored
+      // Define the boolean indicating whether the input needs to be mirrored
       Boolean NeedMirror = false;
       // Save the user input into the input transcript
       TranscriptIn[i] = UserInput;
@@ -44,11 +44,12 @@ public class Conversation{
       String[] InputStorage = UserInput.split(" ");
       int InputStorLen = InputStorage.length;
 
-      for (int j = 0; j < InputStorLen; j++){
+      for (int j = 0; j < InputStorLen; j++){    // walk through every element of the string to check mirror conditions
 
-        // Examine mirror conditions, store changes into the string array and indicate whether a mirroring is made
+        // Examine mirror conditions, store the changes into the string array and stage whether a mirroring is made
 
         // Mirroring pronouns
+        // "I" -> "You"/"you" 
         if (InputStorage[j].equals("I")){
           if (j == 0){    // Considering capitalization
             InputStorage[j] = InputStorage[j].replace("I", "You");
@@ -59,12 +60,28 @@ public class Conversation{
             NeedMirror = true;
           }
         }
+        // "You" -> "I": if the pronoun is capitalized, assume it's the subject of the sentence
+        // "you" -> "me": if the pronoun is not capitalized, assume it's the object of the sentence
+        else if (InputStorage[j].equals("You")){
+          InputStorage[j] = InputStorage[j].replace("You", "I");
+          NeedMirror = true;
+        }
         else if (InputStorage[j].equals("you")){
           InputStorage[j] = InputStorage[j].replace("you", "me");
           NeedMirror = true;
         }
+        // "me" -> "you"
         else if (InputStorage[j].equals("me")){
           InputStorage[j] = InputStorage[j].replace("me", "you");
+          NeedMirror = true;
+        }
+        // "My" <-> "Your" && "my" <-> "your" 
+        else if (InputStorage[j].equals("My")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("My", "Your");
+          NeedMirror = true;
+        }
+        else if (InputStorage[j].equals("Your")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("Your", "My");
           NeedMirror = true;
         }
         else if (InputStorage[j].equals("my")){
@@ -75,25 +92,34 @@ public class Conversation{
           InputStorage[j] = InputStorage[j].replace("your", "my");
           NeedMirror = true;
         }
-        // Dealing with capitalization
-        else if (InputStorage[j].equals("You")){
-          InputStorage[j] = InputStorage[j].replace("You", "I");
+        // "Mine" <-> "Yours" && "mine" <-> "yours"
+        else if (InputStorage[j].equals("Mine")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("Mine", "Yours");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("Me")){
-          InputStorage[j] = InputStorage[j].replace("Me", "You");
+        else if (InputStorage[j].equals("Yours")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("Yours", "Mine");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("My")){
-          InputStorage[j] = InputStorage[j].replace("My", "Your");
+        else if (InputStorage[j].equals("mine")){
+          InputStorage[j] = InputStorage[j].replace("mine", "yours");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("Your")){
-          InputStorage[j] = InputStorage[j].replace("Your", "My");
+        else if (InputStorage[j].equals("yours")){
+          InputStorage[j] = InputStorage[j].replace("yours", "mine");
           NeedMirror = true;
         }
 
         // Mirroring linking verbs
+        // "Am" <-> "Are" && "am" <-> "are"
+        else if (InputStorage[j].equals("Am")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("Am", "Are");
+          NeedMirror = true;
+        }
+        else if (InputStorage[j].equals("Are")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("Are", "Am");
+          NeedMirror = true;
+        }
         else if (InputStorage[j].equals("am")){
           InputStorage[j] = InputStorage[j].replace("am", "are");
           NeedMirror = true;
@@ -102,14 +128,26 @@ public class Conversation{
           InputStorage[j] = InputStorage[j].replace("are", "am");
           NeedMirror = true;
         }
-        // Dealing with capitalization
-        else if (InputStorage[j].equals("Am")){
-          InputStorage[j] = InputStorage[j].replace("Am", "Are");
+
+        // Mirroring conditions with abbreviations in punctuations
+        // "You're"/"you're" <-> "I'm"
+        else if (InputStorage[j].equals("You're")){    // Considering capitalization
+          InputStorage[j] = InputStorage[j].replace("You're", "I'm");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("Are")){
-          InputStorage[j] = InputStorage[j].replace("Are", "Am");
+        else if (InputStorage[j].equals("you're")){
+          InputStorage[j] = InputStorage[j].replace("you're", "I'm");
           NeedMirror = true;
+        }
+        else if (InputStorage[j].equals("I'm")){
+          if (j == 0){    // Considering capitalization
+            InputStorage[j] = InputStorage[j].replace("I'm", "You're");
+            NeedMirror = true;
+          }
+          else{
+            InputStorage[j] = InputStorage[j].replace("I'm", "you're");
+            NeedMirror = true;
+          }
         }
 
         // Mirroring punctuations
@@ -127,27 +165,6 @@ public class Conversation{
             InputStorage[j] = InputStorage[j].replace("?", ".");
           }
         }
-
-        // Mirroring conditions with abbreviations in punctuations
-        else if (InputStorage[j].equals("you're")){
-          InputStorage[j] = InputStorage[j].replace("you're", "I'm");
-          NeedMirror = true;
-        }
-        else if (InputStorage[j].equals("I'm")){
-          if (j == 0){    // Considering capitalization
-            InputStorage[j] = InputStorage[j].replace("I'm", "You're");
-            NeedMirror = true;
-          }
-          else{
-            InputStorage[j] = InputStorage[j].replace("I'm", "you're");
-            NeedMirror = true;
-          }
-        }
-        // Dealing with capitalization
-        else if (InputStorage[j].equals("You're")){
-          InputStorage[j] = InputStorage[j].replace("You're", "I'm");
-          NeedMirror = true;
-        }
       }
 
       // If nothing needs to be mirrored, generate random answer from Canned Response!
@@ -156,7 +173,6 @@ public class Conversation{
           int RandomCan = random.nextInt(CannedRespLen);
           BotOutput = CannedResp[RandomCan];
       }
-
       // Else, output the mirrored input message!
       else{
         for (int j = 0; j < InputStorLen; j++){
