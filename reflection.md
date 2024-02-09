@@ -2,6 +2,7 @@ Use this file to record your reflection on this assignment.
 The warm-up exercise helps me understand how to do mirrorwords and I realized later that the comparison exercise (string.equal) realy matters in this assignment! So the warm-up is really helpful!
 Sometimes it is really useful to write out the comments to not confuse myself.
 However, I don't know if there're easier ways to examine the mirrored conditions and store the transcripts.
+And more and more situations would come up to your mind when you think of the samples, and then you need to modify your codes...
 
 - Which classmates did you consult with while working on this assignment?
 I didn't consult with classmates but indeed kinda work with them together in the TA hours.

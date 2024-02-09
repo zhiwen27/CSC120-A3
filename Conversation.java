@@ -49,7 +49,7 @@ public class Conversation{
         // Examine mirror conditions, store the changes into the string array and stage whether a mirroring is made
 
         // Mirroring pronouns
-        // "I" -> "You"/"you" 
+        // "I" -> "You"/"you": if the pronoun exists at the beginning of a sentence, assume it should be capitalized
         if (InputStorage[j].equals("I")){
           if (j == 0){    // Considering capitalization
             InputStorage[j] = InputStorage[j].replace("I", "You");
@@ -61,14 +61,21 @@ public class Conversation{
           }
         }
         // "You" -> "I": if the pronoun is capitalized, assume it's the subject of the sentence
-        // "you" -> "me": if the pronoun is not capitalized, assume it's the object of the sentence
+        // "you" -> "I"/"me": if the pronoun is not capitalized, assume it's the subject of the sentence if it's at the beginning of
+        //                    a sentence, otherwise, assume it's the object of the sentence
         else if (InputStorage[j].equals("You")){
           InputStorage[j] = InputStorage[j].replace("You", "I");
           NeedMirror = true;
         }
         else if (InputStorage[j].equals("you")){
-          InputStorage[j] = InputStorage[j].replace("you", "me");
-          NeedMirror = true;
+          if (j == 1){
+            InputStorage[j] = InputStorage[j].replace("you", "I");
+            NeedMirror = true;
+          }
+          else{
+            InputStorage[j] = InputStorage[j].replace("you", "me");
+            NeedMirror = true;
+          }
         }
         // "me" -> "you"
         else if (InputStorage[j].equals("me")){
@@ -152,13 +159,97 @@ public class Conversation{
 
         // Mirroring punctuations
         else if (InputStorage[j].contains(".")){
-          InputStorage[j] = InputStorage[j].replace(".", "?");
+          if (InputStorage[j].equals("you.")){    // check if mirror conditions occur before punctuations
+            InputStorage[j] = InputStorage[j].replace("you.", "me?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("me.")){
+            InputStorage[j] = InputStorage[j].replace("me.", "you?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("mine.")){
+            InputStorage[j] = InputStorage[j].replace("mine.", "yours?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("yours.")){
+            InputStorage[j] = InputStorage[j].replace("yours.", "mine?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("am.")){
+            InputStorage[j] = InputStorage[j].replace("am.", "are?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("are.")){
+            InputStorage[j] = InputStorage[j].replace("are.", "am?");
+            NeedMirror = true;
+          }
+          else{
+            InputStorage[j] = InputStorage[j].replace(".", "?");
+          }
         }
         else if (InputStorage[j].contains("!")){
-          InputStorage[j] = InputStorage[j].replace("!", "?");
+          if (InputStorage[j].equals("you!")){    // check if mirror conditions occur before punctuations
+            InputStorage[j] = InputStorage[j].replace("you!", "me?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("me!")){
+            InputStorage[j] = InputStorage[j].replace("me!", "you?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("mine!")){
+            InputStorage[j] = InputStorage[j].replace("mine!", "yours?");
+            NeedMirror = true;
+          }
+          else if (InputStorage[j].equals("yours!")){
+            InputStorage[j] = InputStorage[j].replace("yours!", "mine?");
+            NeedMirror = true;
+          }
+          else{
+            InputStorage[j] = InputStorage[j].replace("!", "?");
+          }
         }
         else if (InputStorage[j].contains("?")){
-          if (InputStorage[0].equals("Am") || InputStorage[0].equals("Are")){
+          if (InputStorage[j].equals("you?")){    // check if mirror conditions occur before punctuations
+            if ((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){    // check if linking verbs are at the front
+              InputStorage[j] = InputStorage[j].replace("you?", "me?");
+              NeedMirror = true;
+            }
+            else{
+              InputStorage[j] = InputStorage[j].replace("you?", "me.");
+              NeedMirror = true;
+            }
+          }
+          else if (InputStorage[j].equals("me?")){
+            if((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){
+              InputStorage[j] = InputStorage[j].replace("me?", "you?");
+              NeedMirror = true;
+            }
+            else{
+              InputStorage[j] = InputStorage[j].replace("me?", "you.");
+              NeedMirror = true;
+            }
+          }
+          else if (InputStorage[j].equals("mine?")){
+            if((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){
+              InputStorage[j] = InputStorage[j].replace("mine?", "yours?");
+              NeedMirror = true;
+            }
+            else{
+              InputStorage[j] = InputStorage[j].replace("mine?", "yours.");
+              NeedMirror = true;
+            }
+          }
+          else if (InputStorage[j].equals("yours?")){
+            if((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){
+              InputStorage[j] = InputStorage[j].replace("yours?", "mine?");
+              NeedMirror = true;
+            }
+            else{
+              InputStorage[j] = InputStorage[j].replace("yours?", "mine.");
+              NeedMirror = true;
+            }
+          }
+          if ((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){    // do not mirror it if the linking verbs are at the front
             continue;
           }
           else{
@@ -179,11 +270,10 @@ public class Conversation{
           BotOutput += InputStorage[j] + " ";
         }
       }
-
-      // Chatbot output
-      System.out.println(BotOutput);
       // Save the chatbot output into the output transcript
       TranscriptOut[i] = BotOutput;
+      // Chatbot output
+      System.out.println(BotOutput);
     }
 
     // Say goodbye!
@@ -192,19 +282,17 @@ public class Conversation{
     Transcript[TransLen - 1] = "You're running out of conversations...See you next time!";
 
     // Combine user's input transcript and chatbot's output transcript into the whole transcript
+    int LoopCntIn = 0;
     for (int i = 1; i < TransLen-1; i+=2){
-      int IndexIn = 0;
-      while(IndexIn < TranscriptIn.length){
-        Transcript[i] = TranscriptIn[IndexIn];
-        IndexIn++;
-      }
+      int IndexIn = LoopCntIn;
+      Transcript[i] = TranscriptIn[IndexIn];
+      LoopCntIn++;
     }
+    int LoopCntOut = 0;
     for (int i = 2; i <= TransLen-1; i+=2){
-      int IndexOut = 0;
-      while(IndexOut < TranscriptIn.length){
-        Transcript[i] = TranscriptOut[IndexOut];
-        IndexOut++;
-      }
+      int IndexOut = LoopCntOut;
+      Transcript[i] = TranscriptOut[IndexOut];
+      LoopCntOut++;
     }
 
     // Print out the transcript!
