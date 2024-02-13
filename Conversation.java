@@ -42,6 +42,7 @@ public class Conversation{
 
       // Define a string array to store separate elements of the input string, and calculate its length
       String[] InputStorage = UserInput.split(" ");
+      String[] InputStorageOri = UserInput.split(" ");    // define another string array to store unchanged input
       int InputStorLen = InputStorage.length;
 
       for (int j = 0; j < InputStorLen; j++){    // walk through every element of the string to check mirror conditions
@@ -50,7 +51,7 @@ public class Conversation{
 
         // Mirroring pronouns
         // "I" -> "You"/"you": if the pronoun exists at the beginning of a sentence, assume it should be capitalized
-        if (InputStorage[j].equals("I")){
+        if (InputStorageOri[j].equals("I")){
           if (j == 0){    // Considering capitalization
             InputStorage[j] = InputStorage[j].replace("I", "You");
             NeedMirror = true;
@@ -61,14 +62,14 @@ public class Conversation{
           }
         }
         // "You" -> "I": if the pronoun is capitalized, assume it's the subject of the sentence
-        // "you" -> "I"/"me": if the pronoun is not capitalized, assume it's the subject of the sentence if it's at the beginning of
-        //                    a sentence, otherwise, assume it's the object of the sentence
-        else if (InputStorage[j].equals("You")){
+        // "you" -> "I"/"me": if the pronoun is not capitalized or if there're linking verbs before the pronoun, assume it's the subject of the sentence
+        //                    if it's at the beginning of a sentence, otherwise, assume it's the object of the sentence
+        else if (InputStorageOri[j].equals("You")){
           InputStorage[j] = InputStorage[j].replace("You", "I");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("you")){
-          if (j == 1){
+        else if (InputStorageOri[j].equals("you")){
+          if ((InputStorageOri[j - 1].equals("Are")) || (InputStorageOri[j - 1].equals("are")) || (j == 1)){
             InputStorage[j] = InputStorage[j].replace("you", "I");
             NeedMirror = true;
           }
@@ -78,75 +79,75 @@ public class Conversation{
           }
         }
         // "me" -> "you"
-        else if (InputStorage[j].equals("me")){
+        else if (InputStorageOri[j].equals("me")){
           InputStorage[j] = InputStorage[j].replace("me", "you");
           NeedMirror = true;
         }
         // "My" <-> "Your" && "my" <-> "your" 
-        else if (InputStorage[j].equals("My")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("My")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("My", "Your");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("Your")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("Your")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("Your", "My");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("my")){
+        else if (InputStorageOri[j].equals("my")){
           InputStorage[j] = InputStorage[j].replace("my", "your");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("your")){
+        else if (InputStorageOri[j].equals("your")){
           InputStorage[j] = InputStorage[j].replace("your", "my");
           NeedMirror = true;
         }
         // "Mine" <-> "Yours" && "mine" <-> "yours"
-        else if (InputStorage[j].equals("Mine")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("Mine")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("Mine", "Yours");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("Yours")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("Yours")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("Yours", "Mine");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("mine")){
+        else if (InputStorageOri[j].equals("mine")){
           InputStorage[j] = InputStorage[j].replace("mine", "yours");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("yours")){
+        else if (InputStorageOri[j].equals("yours")){
           InputStorage[j] = InputStorage[j].replace("yours", "mine");
           NeedMirror = true;
         }
 
         // Mirroring linking verbs
         // "Am" <-> "Are" && "am" <-> "are"
-        else if (InputStorage[j].equals("Am")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("Am")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("Am", "Are");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("Are")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("Are")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("Are", "Am");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("am")){
+        else if (InputStorageOri[j].equals("am")){
           InputStorage[j] = InputStorage[j].replace("am", "are");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("are")){
+        else if (InputStorageOri[j].equals("are")){
           InputStorage[j] = InputStorage[j].replace("are", "am");
           NeedMirror = true;
         }
 
         // Mirroring conditions with abbreviations in punctuations
         // "You're"/"you're" <-> "I'm"
-        else if (InputStorage[j].equals("You're")){    // Considering capitalization
+        else if (InputStorageOri[j].equals("You're")){    // Considering capitalization
           InputStorage[j] = InputStorage[j].replace("You're", "I'm");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("you're")){
+        else if (InputStorageOri[j].equals("you're")){
           InputStorage[j] = InputStorage[j].replace("you're", "I'm");
           NeedMirror = true;
         }
-        else if (InputStorage[j].equals("I'm")){
+        else if (InputStorageOri[j].equals("I'm")){
           if (j == 0){    // Considering capitalization
             InputStorage[j] = InputStorage[j].replace("I'm", "You're");
             NeedMirror = true;
@@ -158,28 +159,28 @@ public class Conversation{
         }
 
         // Mirroring punctuations
-        else if (InputStorage[j].contains(".")){
+        else if (InputStorageOri[j].contains(".")){
           if (InputStorage[j].equals("you.")){    // check if mirror conditions occur before punctuations
             InputStorage[j] = InputStorage[j].replace("you.", "me?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("me.")){
+          else if (InputStorageOri[j].equals("me.")){
             InputStorage[j] = InputStorage[j].replace("me.", "you?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("mine.")){
+          else if (InputStorageOri[j].equals("mine.")){
             InputStorage[j] = InputStorage[j].replace("mine.", "yours?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("yours.")){
+          else if (InputStorageOri[j].equals("yours.")){
             InputStorage[j] = InputStorage[j].replace("yours.", "mine?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("am.")){
+          else if (InputStorageOri[j].equals("am.")){
             InputStorage[j] = InputStorage[j].replace("am.", "are?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("are.")){
+          else if (InputStorageOri[j].equals("are.")){
             InputStorage[j] = InputStorage[j].replace("are.", "am?");
             NeedMirror = true;
           }
@@ -187,20 +188,20 @@ public class Conversation{
             InputStorage[j] = InputStorage[j].replace(".", "?");
           }
         }
-        else if (InputStorage[j].contains("!")){
+        else if (InputStorageOri[j].contains("!")){
           if (InputStorage[j].equals("you!")){    // check if mirror conditions occur before punctuations
             InputStorage[j] = InputStorage[j].replace("you!", "me?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("me!")){
+          else if (InputStorageOri[j].equals("me!")){
             InputStorage[j] = InputStorage[j].replace("me!", "you?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("mine!")){
+          else if (InputStorageOri[j].equals("mine!")){
             InputStorage[j] = InputStorage[j].replace("mine!", "yours?");
             NeedMirror = true;
           }
-          else if (InputStorage[j].equals("yours!")){
+          else if (InputStorageOri[j].equals("yours!")){
             InputStorage[j] = InputStorage[j].replace("yours!", "mine?");
             NeedMirror = true;
           }
@@ -208,48 +209,24 @@ public class Conversation{
             InputStorage[j] = InputStorage[j].replace("!", "?");
           }
         }
-        else if (InputStorage[j].contains("?")){
-          if (InputStorage[j].equals("you?")){    // check if mirror conditions occur before punctuations
-            if ((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){    // check if linking verbs are at the front
-              InputStorage[j] = InputStorage[j].replace("you?", "me?");
-              NeedMirror = true;
-            }
-            else{
-              InputStorage[j] = InputStorage[j].replace("you?", "me.");
-              NeedMirror = true;
-            }
+        else if (InputStorageOri[j].contains("?")){
+          if (InputStorageOri[j].equals("you?")){    // check if mirror conditions occur before punctuations
+            InputStorage[j] = InputStorage[j].replace("you?", "me.");
+            NeedMirror = true;
           }
-          else if (InputStorage[j].equals("me?")){
-            if((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){
-              InputStorage[j] = InputStorage[j].replace("me?", "you?");
-              NeedMirror = true;
-            }
-            else{
-              InputStorage[j] = InputStorage[j].replace("me?", "you.");
-              NeedMirror = true;
-            }
+          else if (InputStorageOri[j].equals("me?")){
+            InputStorage[j] = InputStorage[j].replace("me?", "you.");
+            NeedMirror = true;
           }
-          else if (InputStorage[j].equals("mine?")){
-            if((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){
-              InputStorage[j] = InputStorage[j].replace("mine?", "yours?");
-              NeedMirror = true;
-            }
-            else{
-              InputStorage[j] = InputStorage[j].replace("mine?", "yours.");
-              NeedMirror = true;
-            }
+          else if (InputStorageOri[j].equals("mine?")){
+            InputStorage[j] = InputStorage[j].replace("mine?", "yours.");
+            NeedMirror = true;
           }
-          else if (InputStorage[j].equals("yours?")){
-            if((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){
-              InputStorage[j] = InputStorage[j].replace("yours?", "mine?");
-              NeedMirror = true;
-            }
-            else{
-              InputStorage[j] = InputStorage[j].replace("yours?", "mine.");
-              NeedMirror = true;
-            }
+          else if (InputStorageOri[j].equals("yours?")){
+            InputStorage[j] = InputStorage[j].replace("yours?", "mine.");
+            NeedMirror = true;
           }
-          if ((InputStorage[0].equals("Am") || InputStorage[0].equals("Are"))){    // do not mirror it if the linking verbs are at the front
+          if ((InputStorageOri[0].equals("Am") || InputStorageOri[0].equals("Are"))){    // do not mirror it if the linking verbs are at the front
             continue;
           }
           else{
