@@ -5,7 +5,7 @@ However, I don't know if there're easier ways to examine the mirrored conditions
 And more and more situations would come up to your mind when you think of the samples, and then you need to modify your codes...
 
 - Which classmates did you consult with while working on this assignment?
-I didn't consult with classmates but indeed kinda work with them together in the TA hours.
+I didn't really consult with classmates but I feel like I kind of work with them together during the TA hours.
 - Which session(s) of TA / office hours did you attend?
 TA session on Thursday's night with Jessica and Bobi :)
 
